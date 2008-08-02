@@ -40,16 +40,15 @@ module ActiveDirectory
 		# Try to authenticate the current User against Active Directory
 		# using the supplied password. Returns false upon failure.
 		#
-		# Failure to authenticate can be attributed to a number of different
-		# reasons. The primary 3 reasons are:
+		# Authenticate can fail for a variety of reasons, primarily:
 		#
 		# * The password is wrong
 		# * The account is locked
 		# * The account is disabled
 		#
-		# User#locked? and User#disabled? can be used to identify the latter
-		# two cases, and if the account is enabled and unlocked, the password
-		# is probably invalid.
+		# User#locked? and User#disabled? can be used to identify the
+		# latter two cases, and if the account is enabled and unlocked,
+		# Athe password is probably invalid.
 		#
 		def authenticate(password)
 			return false if password.to_s.empty?
@@ -74,16 +73,17 @@ module ActiveDirectory
 
 		#
 		# Returns an array of Group objects that this User belongs to.
-		# Only the immediate parent groups are returned, so if the user Sally
-		# is in a group called Sales, and Sales is in a group called Marketting,
-		# this method would only return the Sales group.
+		# Only the immediate parent groups are returned, so if the user
+		# Sally is in a group called Sales, and Sales is in a group
+		# called Marketting, this method would only return the Sales group.
 		#
 		def groups
 			@groups ||= memberOf.collect { |dn| Group.find_by_distinguishedName(dn) }
 		end
 
 		#
-		# Returns an array of User objects that have this User as their manager.
+		# Returns an array of User objects that have this
+		# User as their manager.
 		#
 		def direct_reports
 			return [] if @entry.directReports.nil?
@@ -91,10 +91,11 @@ module ActiveDirectory
 		end
 
 		#
-		# Returns true if this account has been locked out (usually due to too
-		# many invalid authentication attempts).
+		# Returns true if this account has been locked out
+		# (usually because of too many invalid authentication attempts).
 		#
 		# Locked accounts can be unlocked with the User#unlock! method.
+		#
 		def locked?
 			!lockoutTime.nil? && lockoutTime.to_i != 0
 		end
@@ -108,7 +109,8 @@ module ActiveDirectory
 
 		#
 		# Returns true if the user should be able to log in with a correct
-		# password (essentially, their account is not disabled or locked out).
+		# password (essentially, their account is not disabled or locked
+		# out).
 		#
 		def can_login?
 			!disabled? && !locked?
@@ -117,12 +119,13 @@ module ActiveDirectory
 		#
 		# Change the password for this account.
 		#
-		# This operation requires that the bind user specified in Base.setup
-		# have heightened privileges. It also requires an SSL connection.
+		# This operation requires that the bind user specified in
+		# Base.setup have heightened privileges. It also requires an
+		# SSL connection.
 		#
 		# If the force_change argument is passed as true, the password will
-		# be marked as 'expired', forcing the user to change it the next time
-		# they successfully log into the domain.
+		# be marked as 'expired', forcing the user to change it the next
+		# time they successfully log into the domain.
 		#
 		def change_password(new_password, force_change = false)
 			settings = @@settings.dup.merge {

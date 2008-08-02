@@ -27,10 +27,10 @@ module ActiveDirectory
 	#
 	class Base
 		#
-		# A Net::LDAP::Filter object that doesn't do any filtering (outside of
-		# check that the CN attribute is present.  This is used internally for
-		# specifying a 'no filter' condition for methods that require a filter
-		# object.
+		# A Net::LDAP::Filter object that doesn't do any filtering
+		# (outside of check that the CN attribute is present.  This
+		# is used internally for specifying a 'no filter' condition
+		# for methods that require a filter object.
 		#
 		NIL_FILTER = Net::LDAP::Filter.pres('cn')
 
@@ -54,12 +54,14 @@ module ActiveDirectory
 		# This will configure Ruby/ActiveDirectory to connect to the domain
 		# controller at domain_controller1.example.org, using port 389. The
 		# domain's base LDAP dn is expected to be 'dc=example,dc=org', and
-		# Ruby/ActiveDirectory will try to bind as the querying_user@example.org
-		# user, using the supplied password.
+		# Ruby/ActiveDirectory will try to bind as the
+		# querying_user@example.org user, using the supplied password.
 		#
-		# Currently, there can be only one active connection per execution context.
+		# Currently, there can be only one active connection per
+		# execution context.
 		#
-		# For more advanced options, refer to the Net::LDAP.new documentation.
+		# For more advanced options, refer to the Net::LDAP.new
+		# documentation.
 		#
 		def self.setup(settings)
 			@@settings = settings
@@ -81,29 +83,31 @@ module ActiveDirectory
 		#
 		# Check to see if any entries matching the passed criteria exists.
 		#
-		# Filters should be passed as a hash of attribute_name => expected_value,
-		# like:
+		# Filters should be passed as a hash of 
+		# attribute_name => expected_value, like:
 		#
 		#   User.exists?(
 		#     :sn => 'Hunt',
 		#     :givenName => 'James'
 		#   )
 		#
-		# which will return true if one or more User entries have an sn (surname)
-		# of exactly 'Hunt' and a givenName (first name) of exactly 'Hunt'.
+		# which will return true if one or more User entries have an
+		# sn (surname) of exactly 'Hunt' and a givenName (first name)
+		# of exactly 'James'.
 		#
-		# Partial attribute matches are available.	For instance,
+		# Partial attribute matches are available.  For instance,
 		#
 		#   Group.exists?(
 		#     :description => 'OldGroup_*'
 		#   )
 		#
-		# would return true if there are any Group objects in Active Directory
-		# whose descriptions start with OldGroup_, like OldGroup_Reporting, or
-		# OldGroup_Admins.
+		# would return true if there are any Group objects in
+		# Active Directory whose descriptions start with OldGroup_,
+		# like OldGroup_Reporting, or OldGroup_Admins.
 		#
-		# (Note that the * wildcard matches zero or more characters, so the above
-		# query would also return true if a group names 'OldGroup_' exists)
+		# Note that the * wildcard matches zero or more characters,
+		# so the above query would also return true if a group named
+		# 'OldGroup_' exists.
 		# 
 		def self.exists?(filter_as_hash)
 			criteria = make_filter_from_hash(filter_as_hash) & filter
@@ -131,29 +135,29 @@ module ActiveDirectory
 		end
 
 		#
-		# Performs a search on the Active Directory store, with similar syntax
-		# to the ActiveRecord#find method.
+		# Performs a search on the Active Directory store, with similar
+		# syntax to the Rails ActiveRecord#find method.
 		#
 		# The first argument passed should be
-		# either :first or :all, to indicate that we want only one (:first) or
-		# all (:all) results back from the resultant set.
+		# either :first or :all, to indicate that we want only one
+		# (:first) or all (:all) results back from the resultant set.
 		#
-		# The second argument should be a hash of attribute_name => expected_value
-		# pairs.
+		# The second argument should be a hash of attribute_name =>
+		# expected_value pairs.
 		#
 		#   User.find(:all, :sn => 'Hunt')
 		#
-		# would find all of the User objects in Active Directory that have a
-		# surname of exactly 'Hunt'.  as with the Base.exists? method, partial
-		# searches are allowed.
+		# would find all of the User objects in Active Directory that
+		# have a surname of exactly 'Hunt'.  As with the Base.exists?
+		# method, partial searches are allowed.
 		#
-		# This method always returns an array if the caller specified :all for the
-		# search type (first argument).  If no results are found, the array will
-		# be empty.
+		# This method always returns an array if the caller specifies
+		# :all for the search type (first argument).  If no results
+		# are found, the array will be empty.
 		#
-		# If you call find(:first, ...), you will either get an object (like a
-		# User or a Group) back, or nil, if there were no entries matching your
-		# filters.
+		# If you call find(:first, ...), you will either get an object
+		# (a User or a Group) back, or nil, if there were no entries
+		# matching your filter.
 		#
 		def self.find(*args)
 			options = {
@@ -239,11 +243,12 @@ module ActiveDirectory
 		end
 
 		#
-		# Updates a single attribute (name) with one or more values (value),
-		# by immediately contacting the Active Directory server and initiating
-		# the update remotely.
+		# Updates a single attribute (name) with one or more values
+		# (value), by immediately contacting the Active Directory
+		# server and initiating the update remotely.
 		#
-		# Entries are always reloaded (via Base.reload) after calling this method.
+		# Entries are always reloaded (via Base.reload) after calling
+		# this method.
 		#
 		def update_attribute(name, value)
 			update_attributes(name.to_s => value)
@@ -251,8 +256,8 @@ module ActiveDirectory
 
 		#
 		# Updates multiple attributes, like ActiveRecord#update_attributes.
-		# The updates are immediately sent to the server for processing, and
-		# the entry is reloaded after the update (if all went well).
+		# The updates are immediately sent to the server for processing,
+		# and the entry is reloaded after the update (if all went well).
 		#
 		def update_attributes(attributes_to_update)
 			return true if attributes_to_update.empty?
@@ -285,10 +290,11 @@ module ActiveDirectory
 		# Create a new entry in the Active Record store.
 		#
 		# dn is the Distinguished Name for the new entry.	This must be
-		# a unique identifier, and can be passed as either a Container object
+		# a unique identifier, and can be passed as either a Container
 		# or a plain string.
 		#
-		# attributes is a symbol-keyed hash of attribute_name => value pairs.
+		# attributes is a symbol-keyed hash of attribute_name => value
+		# pairs.
 		#
 		def self.create(dn,attributes)
 			return nil if dn.nil? || attributes.nil?
@@ -305,7 +311,7 @@ module ActiveDirectory
 		end
 
 		#
-		# Deletes the current entry from the Active Record store and returns true
+		# Deletes the entry from the Active Record store and returns true
 		# if the operation was successfully.
 		#
 		def destroy
@@ -321,7 +327,8 @@ module ActiveDirectory
 		end
 
 		#
-		# Saves any pending changes to the entry by updating the remote entry.
+		# Saves any pending changes to the entry by updating the remote
+		# entry.
 		#
 		def save
 			if update_attributes(@attributes)
@@ -334,9 +341,10 @@ module ActiveDirectory
 
 		#
 		# This method may one day provide the ability to move entries from
-		# container to container. Currently, it does nothing, as we are waiting
-		# on the Net::LDAP folks to either document the Net::LDAP#modrdn method,
-		# or provide a similar method for moving / renaming LDAP entries.
+		# container to container. Currently, it does nothing, as we are
+		# waiting on the Net::LDAP folks to either document the
+		# Net::LDAP#modrdn method, or provide a similar method for
+		# moving / renaming LDAP entries.
 		#
 		def move(new_rdn)
 			return false if new_record?
