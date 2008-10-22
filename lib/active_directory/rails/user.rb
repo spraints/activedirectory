@@ -21,7 +21,7 @@
 #
 #++ license
 
-module ActiveDirectory::Rails::User
+module ActiveDirectory; module Rails ; module User
 	def self.included(klass)
 		klass.extend(ClassMethods)
 		klass.send(:include, InstanceMethods)
@@ -134,4 +134,4 @@ module ActiveDirectory::Rails::User
 			find(:all, :conditions => 'username = ""')
 		end
 	end
-end 
+end ; end ; end 

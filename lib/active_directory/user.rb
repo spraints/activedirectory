@@ -128,10 +128,10 @@ module ActiveDirectory
 		# time they successfully log into the domain.
 		#
 		def change_password(new_password, force_change = false)
-			settings = @@settings.dup.merge {
+			settings = @@settings.dup.merge({
 				:port => 636,
 				:encryption => { :method => :simple_tls }
-			}
+			})
 
 			ldap = Net::LDAP.new(settings)
 			ldap.modify(
